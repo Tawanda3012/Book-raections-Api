@@ -1,4 +1,5 @@
 from models import BookModel, ReviewModel
+import psycopg2
 
 
 
@@ -11,11 +12,48 @@ review2 = ReviewModel('I hated it', 1)
 review3 = ReviewModel('an even more timeless classic', 2)
 review4 = ReviewModel('I hated it even more', 2)
 
-
+HOST = '127.0.0.1'
+DATABASE = 'bookreactions'
+DB_PORT = 5432
+USER = 'postgres'
+PASSWORD = 'tawanda'
 
 class Repository():
+    
+    
+    def get_db(self):
+       return psycopg2.connect(
+        host=HOST,
+        database=DATABASE,
+        port=DB_PORT,
+        user=USER,
+        password=PASSWORD)
+    
+    
+    
     def books_get_all(self):
-        return [book1, book2]
+        conn = None
+        try:
+            conn = self.get_db()
+            if (conn):
+               ps_cursor = conn.cursor()
+               ps_cursor.execute(
+               "select title, author, bookId, cover from book order by title")
+               book_records = ps_cursor.fetchall()
+               book_list = []
+               for row in book_records:
+                  book_list.append(BookModel(row[0], row[1], row[2], row[3])) 
+               ps_cursor.close()
+               
+            return book_list
+
+        except Exception as error:
+            print(error)
+
+            
+        finally:
+            if conn is not None:
+              conn.close()
     
     def book_get_by_id(self, book_id):
         books=[book1, book2]
@@ -29,7 +67,26 @@ class Repository():
         return ReviewModel(data['content'], data['bookId'], 1)
     
     def book_add(self, data):
-        return BookModel(data['title'], data['cover'], 3,data['author'])
+        conn = None
+        try:
+            conn = self.get_db()
+            if (conn):
+                ps_cursor = conn.cursor()
+                ps_cursor.execute("INSERT INTO book(title,cover,author)VALUES (%s, %s, %s) RETURNING bookId",(data['title'], data['cover'], data['author']))        
+                conn.commit()
+                id = ps_cursor.fetchone()[0]
+                ps_cursor.close()
+                book = BookModel(data['title'],id, data['author'], data['cover'])
+            return book
+
+
+        except Exception as error:
+            print(error)
+        finally:
+            if conn is not None:
+                conn.close()
+    
+
 
     
 

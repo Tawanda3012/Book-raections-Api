@@ -12,7 +12,7 @@ class BookList(Resource):
     def get(self):
        return [book.__dict__ for book in self.repo.books_get_all()]   
    
-    def post(self):
+    def post(self, req=request):
         data = request.get_json()
         return self.repo.book_add(data).__dict__
     
