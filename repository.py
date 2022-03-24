@@ -1,8 +1,7 @@
 from models import BookModel, ReviewModel
 import psycopg2
 import os
-
-
+from flask import current_app, g
 
 
 
@@ -15,28 +14,22 @@ review4 = ReviewModel('I hated it even more', 2)
 
 
 
-HOST = os.environ.get("HOST")
-DATABASE = os.environ.get("DATABASE")
-DB_PORT = os.environ.get("DB_PORT")
-USER = os.environ.get("USER")
-PASSWORD = os.environ.get("PASSWORD")
+
 
 class Repository():
     
     
     def get_db(self):
-       return psycopg2.connect(
-        host=HOST,
-        database=DATABASE,
-        port=DB_PORT,
-        user=USER,
-        password=PASSWORD)
+       if 'db' not in g:
+           g.db = current_app.config['pSQL_pool'].getconn()
+       return g.db
+           
     
     
     
     def books_get_all(self):
-        conn = None
-        try:
+      
+       
             conn = self.get_db()
             if (conn):
                ps_cursor = conn.cursor()
@@ -50,17 +43,10 @@ class Repository():
                
             return book_list
 
-        except Exception as error:
-            print(error)
-
-            
-        finally:
-            if conn is not None:
-              conn.close()
+       
     
     def book_get_by_id(self, book_id):
-        conn = None
-        try:
+       
             conn = self.get_db()
             if(conn):
                  ps_cursor = conn.cursor()
@@ -69,20 +55,14 @@ class Repository():
                  book = BookModel(row[0], row[1], row[2], row[3])
                  ps_cursor.close()
             return book
-        except Exception as error:
-            
-            print(error)
-        finally:
-            if conn is not None:
-                conn.close()
+       
             
         
             
        
     
     def reviews_get_by_book_id(self, book_id):
-        conn = None
-        try:
+       
              conn = self.get_db()
              if(conn):
                  ps_cursor = conn.cursor()
@@ -91,17 +71,12 @@ class Repository():
                  reviews = [review1,review2,review3,review4]
                  ps_cursor.close()
              return reviews
-        except Exception as error:
-            print(error)
-        finally:
-            if conn is None:
-                conn.close
+       
         
        
     
     def review_add(self, data):
-        conn = None
-        try:
+       
             conn = self.get_db()
             if (conn):
                 ps_cursor = conn.cursor()
@@ -111,17 +86,12 @@ class Repository():
                 ps_cursor.close()
                 review = ReviewModel(data['content'],id, data['bookId'], data['id'])       
             return review
-        except Exception as error:
-            print(error)
-        finally:
-             if conn is not None:
-                  conn.close()
+        
                  
             
     
     def book_add(self, data):
-        conn = None
-        try:
+        
             conn = self.get_db()
             if (conn):
                 ps_cursor = conn.cursor()
@@ -133,11 +103,7 @@ class Repository():
             return book
 
 
-        except Exception as error:
-            print(error)
-        finally:
-            if conn is not None:
-                conn.close()
+        
     
 
 

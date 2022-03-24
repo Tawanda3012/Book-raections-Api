@@ -18,7 +18,9 @@
                 "DB_PORT": "5432",
                 "USER": "postgres",
                 "PASSWORD": "tawanda",
-                "BASE_URL" : "BASE_URL"
+                "BASE_URL" : "BASE_URL",
+                "MIN":"1",
+                "MAX":"5"
             },
             
             "args": [
