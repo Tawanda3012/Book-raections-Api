@@ -14,11 +14,17 @@ class BookList(Resource):
    
     def post(self, req=request):
         data = request.get_json()
-        return self.repo.book_add(data).__dict__
+        if 'cover' in data:
+            return self.repo.book_add(data).__dict__
+        else:
+            data['cover'] = ''
+            return self.repo.book_add(data).__dict__
+
     
 class Book(Resource):
     def __init__(self, repo=repository):
      self.repo = repo
+    
     def get(self, book_id):
        return self.repo.book_get_by_id(int(book_id)).__dict__
 
