@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         
+        
         {
             "name": "Python: Flask",
             "type": "python",
@@ -18,7 +19,7 @@
                 "DB_PORT": "5432",
                 "USER": "postgres",
                 "PASSWORD": "tawanda",
-                "BASE_URL" : "BASE_URL",
+                "BASE_URL" : "/api/bookreactions",
                 "MIN":"1",
                 "MAX":"5"
             },

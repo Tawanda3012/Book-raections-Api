@@ -1,6 +1,8 @@
-from models import BookModel, ReviewModel
+from distutils.log import error
+from select import select
+from turtle import title
 import psycopg2
-import os
+from models import BookModel, ReviewModel
 from flask import current_app, g
 
 
@@ -46,46 +48,55 @@ class Repository():
        
     
     def book_get_by_id(self, book_id):
-       
-            conn = self.get_db()
-            if(conn):
-                 ps_cursor = conn.cursor()
-                 ps_cursor.execute("select title, author, bookId, cover from book where bookId =%s",[book_id])
-                 row = ps_cursor.fetchone()
-                 book = BookModel(row[0], row[1], row[2], row[3])
-                 ps_cursor.close()
-            return book
+        id = book_id
+        conn = self.get_db()
+        if (conn):
+            ps_cursor = conn.cursor()
+            ps_cursor.execute(f'select title, author, bookId, cover from book where bookId = {int(book_id)}')
+            book_record = ps_cursor.fetchone()
+            ps_cursor.close() 
+            book = BookModel(book_record[0], book_record[1],book_record[2],book_record[3])
+        return book
+    
        
             
         
             
+       
+    
+  
+       
+        
        
     
     def reviews_get_by_book_id(self, book_id):
-       
-             conn = self.get_db()
-             if(conn):
-                 ps_cursor = conn.cursor()
-                 ps_cursor.execute("select title, author, bookId, cover from book where bookId =%s",[book_id])
-                 row = ps_cursor.fetchone()
-                 reviews = [review1,review2,review3,review4]
-                 ps_cursor.close()
-             return reviews
-       
+        conn = self.get_db()
+        if(conn):
+            ps_cursor = conn.cursor()
+            ps_cursor.execute(
+                f'select content, bookId from review where bookId = {book_id}'
+            ) 
+            review_records = ps_cursor.fetchall()
+            book_review = []
+            for row in review_records:
+                book_review.append(ReviewModel(row[0], row[1]))
+        return book_review 
         
-       
-    
-    def review_add(self, data):
-       
-            conn = self.get_db()
-            if (conn):
-                ps_cursor = conn.cursor()
-                ps_cursor.execute("INSERT INTO reviews(title,cover,author)VALUES (%s, %s, %s) RETURNING bookId",(data['title'], data['cover'], data['author']))        
-                conn.commit()
-                id = ps_cursor.fetchone()[0]
-                ps_cursor.close()
-                review = ReviewModel(data['content'],id, data['bookId'], data['id'])       
+        
+    def review_add(self,data):
+        conn = self.get_db()
+        if (conn):
+            ps_cursor = conn.cursor()
+            ps_cursor.execute(
+                "INSERT INTO review(content) VALUES(%s) RETURNING bookId",
+                (data['content'])
+            )
+            conn.commit()
+            id = ps_cursor.fetchone()[0]
+            ps_cursor.close()          
+            review = (ReviewModel(data['content'], id))
             return review
+    
         
                  
             
@@ -99,7 +110,7 @@ class Repository():
                 conn.commit()
                 id = ps_cursor.fetchone()[0]
                 ps_cursor.close()
-                book = BookModel(data['title'],id, data['author'], data['cover'])
+                book = BookModel(data['title'],id, data['author'], data['cover'],id)
             return book
 
 
