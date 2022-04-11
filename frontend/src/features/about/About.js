@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+import React from "react"
+>>>>>>> bd98f44 (image upload)
 function About() {
   return (<>
     <div className="row">

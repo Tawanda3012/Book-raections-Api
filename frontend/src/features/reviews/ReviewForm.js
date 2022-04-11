@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 
+=======
+import React from "react"
+>>>>>>> bd98f44 (image upload)
 import PropTypes from 'prop-types';
 import { addReviewAsync } from './reviewSlice';
 import { store } from '../../app/store';

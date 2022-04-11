@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+import React from "react"
+
+>>>>>>> bd98f44 (image upload)
 const Navigation = () => (
 	<nav className="navbar navbar-expand-sm bg-light">
 		 <a className="navbar-brand" href="/">Book Reactions</a>

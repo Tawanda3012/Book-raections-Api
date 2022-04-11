@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> bd98f44 (image upload)
 const url = process.env.REACT_APP_URL; 
 
 const headers = {

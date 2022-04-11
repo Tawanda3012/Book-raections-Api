@@ -1,0 +1,10 @@
+{
+   "folders": [
+      {
+         "path": "file:///home/tawanda"
+      }
+   ],
+   "settings": {
+      "csharp.suppressDotnetRestoreNotification": true
+   }
+}

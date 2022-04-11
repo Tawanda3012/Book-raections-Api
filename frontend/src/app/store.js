@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> bd98f44 (image upload)
 import { configureStore } from '@reduxjs/toolkit';
 import bookReducer from '../features/books/bookSlice';
 import reviewReducer from '../features/reviews/reviewSlice';
